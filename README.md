@@ -5,4 +5,4 @@ This is a fork of https://github.com/mongodb-developer/get-started-java, simplif
 ### Execution Steps
 
 1. `cd java`
-2. `mvn compile exec:java -Dexec.mainClass="com.start.Connection"`
+2. `mvn compile exec:java -Dexec.mainClass="com.start.Connection" -Dexec.args="mongodb://localhost:27017, mongodb://username:password@localhost:27017/?authMechanism=PLAIN"`

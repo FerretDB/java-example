@@ -37,6 +37,8 @@ public class Connection {
             command = new Document("dropDatabase", "test");
             res = database.runCommand(command);
 
+            System.out.println(res);
+
             ArrayList docList = new ArrayList();
             for (var i = 1; i < 5; i++) {
                 BasicDBObject doc = new BasicDBObject("_id", i);
@@ -46,6 +48,14 @@ public class Connection {
 
             command = new Document("insert", docList);
             res = database.runCommand(command);
+
+            System.out.println(res);
+
+            doc = new BasicDBObject("a", 4);
+            command = new Document("find", doc);
+            res = database.runCommand(command);
+
+            assert res == doc;
 
             mongoClient.close();
         }

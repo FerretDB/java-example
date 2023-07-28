@@ -1,12 +1,16 @@
 package com.start;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.bson.Document;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerApi;
@@ -48,17 +52,17 @@ public class Connection {
 
             System.out.println(res.toJson());
 
-            ArrayList docList = new ArrayList();
+            List<Document> docList = Arrays.asList();
             for (int i = 1; i < 5; i++) {
-                BasicDBObject doc = new BasicDBObject("_id", i);
+                Document doc = new Document("_id", i);
                 doc.append("a", i);
-                docList.add(doc);
+                docList.add(i, doc);
             }
 
-            command = new Document("insert", docList);
-            res = database.runCommand(command);
+            MongoCollection<Document> collection = database.getCollection("foo");
+            InsertManyResult imres = collection.insertMany(docList, null);
 
-            System.out.println(res.toJson());
+            System.out.println(imres.toString());
 
             Document doc = new Document("a", 4);
             command = new Document("find", doc);

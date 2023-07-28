@@ -46,7 +46,7 @@ public class Connection {
             command = new Document("dropDatabase", "test");
             res = database.runCommand(command);
 
-            System.out.println(res);
+            System.out.println(res.toJson());
 
             ArrayList docList = new ArrayList();
             for (int i = 1; i < 5; i++) {
@@ -58,7 +58,7 @@ public class Connection {
             command = new Document("insert", docList);
             res = database.runCommand(command);
 
-            System.out.println(res);
+            System.out.println(res.toJson());
 
             Document doc = new Document("a", 4);
             command = new Document("find", doc);

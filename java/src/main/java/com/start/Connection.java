@@ -24,12 +24,12 @@ public class Connection {
         Document command = new Document("ping", 1);
         Document res = database.runCommand(command);
 
-        assert res == new Document("ok", 1.0) : "ping failed";
+        assert res.equals(new Document("ok", 1.0)) : "ping failed";
 
         command = new Document("dropDatabase", 1);
         res = database.runCommand(command);
 
-        assert res == new Document("ok", 1.0) : "dropDatabase failed";
+        assert res.equals(new Document("ok", 1.0)) : "dropDatabase failed";
 
         List<Document> docList = new ArrayList<Document>(4);
         docList.add(new Document("_id", 1).append("a", 1));
@@ -40,8 +40,8 @@ public class Connection {
         MongoCollection<Document> collection = database.getCollection("foo");
         collection.insertMany(docList);
 
-        Document doc = collection.find(eq("a", 4)).first();
-        assert res == doc : "Value should be 4";
+        Document actual = collection.find(eq("a", 4)).first();
+        assert actual.equals(new Document("_id", 4).append("a", 4)) : "Value should be 4";
 
         mongoClient.close();
     }

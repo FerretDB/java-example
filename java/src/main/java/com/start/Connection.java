@@ -24,28 +24,24 @@ public class Connection {
         Document command = new Document("ping", 1);
         Document res = database.runCommand(command);
 
-        System.out.println(res.toJson());
+        assert res == new Document("ok", 1.0) : "ping failed";
 
         command = new Document("dropDatabase", 1);
         res = database.runCommand(command);
 
-        System.out.println(res.toJson());
+        assert res == new Document("ok", 1.0) : "dropDatabase failed";
 
         List<Document> docList = new ArrayList<Document>(4);
-        for (int i = 1; i < 5; i++) {
-            Document doc = new Document("_id", i);
-            doc.append("a", i);
-            docList.add(doc);
-        }
+        docList.add(new Document("_id", 1).append("a", 1));
+        docList.add(new Document("_id", 2).append("a", 2));
+        docList.add(new Document("_id", 3).append("a", 3));
+        docList.add(new Document("_id", 4).append("a", 4));
 
         MongoCollection<Document> collection = database.getCollection("foo");
-        InsertManyResult imres = collection.insertMany(docList);
-
-        System.out.println(imres.toString());
+        collection.insertMany(docList);
 
         Document doc = collection.find(eq("a", 4)).first();
-
-        assert res == doc;
+        assert res == doc : "Value should be 4";
 
         mongoClient.close();
     }

@@ -11,6 +11,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.InsertManyResult;
 
 public class Connection {
 
@@ -28,7 +29,7 @@ public class Connection {
         command = new Document("dropDatabase", 1);
         res = database.runCommand(command);
 
-        assert res.equals(new Document("dropped", "test").append("ok", 1.0)) : "dropDatabase failed";
+        assert res.equals(new Document("ok", 1.0)) : "dropDatabase failed";
 
         List<Document> docList = new ArrayList<Document>(4);
         docList.add(new Document("_id", 1).append("a", 1));

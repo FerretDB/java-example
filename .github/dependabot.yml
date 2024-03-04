@@ -2,7 +2,7 @@
 version: 2
 updates:
   - package-ecosystem: "maven"
-    directory: "/"
+    directory: "/java"
     assignees: [b1ron]
     open-pull-requests-limit: 5
     schedule:

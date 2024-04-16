@@ -25,7 +25,7 @@ public class Connection {
 
     public static void main(String[] args) throws ParseException {
         Options options = new Options();
-        options.addOption("uri", true, "MongoDB connection string.");
+        options.addOption("uri", true, "MongoDB connection string."); // hasArg is true by default
         options.addOption("strict", false, "Use strict stable API mode.");
 
         CommandLineParser parser = new DefaultParser();

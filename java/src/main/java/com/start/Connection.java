@@ -12,6 +12,10 @@ import org.bson.Document;
 
 import static com.mongodb.client.model.Filters.eq;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -27,40 +31,49 @@ public class Connection {
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
 
+        MongoClient mongoClient;
+        String uri = cmd.getOptionValue("uri");
+
         if(cmd.hasOption("strict")) {
-            System.err.println("Strict mode is not supported yet.");
+            ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .strict(true)
+                .build();
+            
+            MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(uri))
+                .serverApi(serverApi)
+                .build();
+
+            mongoClient = MongoClients.create(settings);
+        } else {
+            mongoClient = MongoClients.create(uri);
         }
-        else {
-            // print the date
-        }
 
-        // MongoClient mongoClient;
-        // mongoClient = MongoClients.create(options.getOption("uri").getValue());
+        MongoDatabase database = mongoClient.getDatabase("test");
 
-        // MongoDatabase database = mongoClient.getDatabase("test");
+        Document command = new Document("ping", 1);
+        Document res = database.runCommand(command);
 
-        // Document command = new Document("ping", 1);
-        // Document res = database.runCommand(command);
+        assert res.getDouble("ok").equals(1.0) : "ping failed";
 
-        // assert res.getDouble("ok").equals(1.0) : "ping failed";
+        command = new Document("dropDatabase", 1);
+        res = database.runCommand(command);
 
-        // command = new Document("dropDatabase", 1);
-        // res = database.runCommand(command);
+        assert res.getDouble("ok").equals(1.0) : "dropDatabase failed";
 
-        // assert res.getDouble("ok").equals(1.0) : "dropDatabase failed";
+        List<Document> docList = new ArrayList<Document>(4);
+        docList.add(new Document("_id", 1).append("a", 1));
+        docList.add(new Document("_id", 2).append("a", 2));
+        docList.add(new Document("_id", 3).append("a", 3));
+        docList.add(new Document("_id", 4).append("a", 4));
 
-        // List<Document> docList = new ArrayList<Document>(4);
-        // docList.add(new Document("_id", 1).append("a", 1));
-        // docList.add(new Document("_id", 2).append("a", 2));
-        // docList.add(new Document("_id", 3).append("a", 3));
-        // docList.add(new Document("_id", 4).append("a", 4));
+        MongoCollection<Document> collection = database.getCollection("foo");
+        collection.insertMany(docList);
 
-        // MongoCollection<Document> collection = database.getCollection("foo");
-        // collection.insertMany(docList);
+        Document actual = collection.find(eq("a", 4)).first();
+        assert actual.equals(new Document("_id", 4).append("a", 4)) : "Value should be 4";
 
-        // Document actual = collection.find(eq("a", 4)).first();
-        // assert actual.equals(new Document("_id", 4).append("a", 4)) : "Value should be 4";
-
-        // mongoClient.close();
+        mongoClient.close();
     }
 }

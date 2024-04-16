@@ -3,6 +3,7 @@ package com.start;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.cli.Options;
 import org.bson.Document;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -15,8 +16,12 @@ import com.mongodb.client.MongoDatabase;
 public class Connection {
 
     public static void main(String[] args) {
+        Options options = new Options();
+        options.addOption("strict", false, "Use strict stable API mode.");
+        options.addOption("uri", true, "MongoDB connection string.");
+
         MongoClient mongoClient;
-        mongoClient = MongoClients.create(args[args.length-1]);
+        mongoClient = MongoClients.create(options.getOption("uri").getValue());
 
         MongoDatabase database = mongoClient.getDatabase("test");
 

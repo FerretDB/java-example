@@ -5,4 +5,5 @@ This is a fork of https://github.com/mongodb-developer/get-started-java, simplif
 ### Execution Steps
 
 1. `cd java`
-2. `mvn compile exec:java -Dexec.mainClass="com.start.Connection" -Dexec.args="mongodb://localhost:27017`
+2. create the JAR file with dependancies: `mvn clean compile assembly:single`
+3. run with strict Stable API: `java -jar target/java-example-1.0-SNAPSHOT-jar-with-dependencies.jar Connection -strict`

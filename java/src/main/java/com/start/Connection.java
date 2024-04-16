@@ -25,8 +25,8 @@ public class Connection {
 
     public static void main(String[] args) throws ParseException {
         Options options = new Options();
-        options.addOption("strict", false, "Use strict stable API mode.");
         options.addOption("uri", true, "MongoDB connection string.");
+        options.addOption("strict", false, "Use strict stable API mode.");
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
@@ -34,7 +34,7 @@ public class Connection {
         MongoClient mongoClient;
         String uri = cmd.getOptionValue("uri");
 
-        if(cmd.hasOption("strict")) {
+        if (cmd.hasOption("strict")) {
             ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
                 .strict(true)

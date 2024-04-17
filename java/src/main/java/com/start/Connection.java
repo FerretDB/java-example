@@ -3,10 +3,19 @@ package com.start;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.bson.Document;
 
 import static com.mongodb.client.model.Filters.eq;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -14,9 +23,32 @@ import com.mongodb.client.MongoDatabase;
 
 public class Connection {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
+        Options options = new Options();
+        options.addOption("uri", true, "MongoDB connection string."); // hasArg is true by default
+        options.addOption("strict", false, "Use strict stable API mode.");
+
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = parser.parse(options, args);
+
         MongoClient mongoClient;
-        mongoClient = MongoClients.create(args[args.length-1]);
+        String uri = cmd.getOptionValue("uri");
+
+        if (cmd.hasOption("strict")) {
+            ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .strict(true)
+                .build();
+            
+            MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(uri))
+                .serverApi(serverApi)
+                .build();
+
+            mongoClient = MongoClients.create(settings);
+        } else {
+            mongoClient = MongoClients.create(uri);
+        }
 
         MongoDatabase database = mongoClient.getDatabase("test");
 

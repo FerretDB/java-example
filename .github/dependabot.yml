@@ -3,7 +3,7 @@ version: 2
 updates:
   - package-ecosystem: "maven"
     directory: "/java"
-    assignees: [b1ron]
+    assignees: [AlekSi]
     open-pull-requests-limit: 5
     schedule:
       interval: "weekly"

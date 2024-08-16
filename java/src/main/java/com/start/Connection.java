@@ -39,7 +39,7 @@ public class Connection {
                 .version(ServerApiVersion.V1)
                 .strict(true)
                 .build();
-            
+
             MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(uri))
                 .serverApi(serverApi)

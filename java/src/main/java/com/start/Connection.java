@@ -22,7 +22,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 public class Connection {
-
     public static void main(String[] args) throws ParseException {
         Options options = new Options();
         options.addOption("uri", true, "MongoDB connection string."); // hasArg is true by default
@@ -36,14 +35,14 @@ public class Connection {
 
         if (cmd.hasOption("strict")) {
             ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .strict(true)
-                .build();
+                    .version(ServerApiVersion.V1)
+                    .strict(true)
+                    .build();
 
             MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(uri))
-                .serverApi(serverApi)
-                .build();
+                    .applyConnectionString(new ConnectionString(uri))
+                    .serverApi(serverApi)
+                    .build();
 
             mongoClient = MongoClients.create(settings);
         } else {
@@ -75,5 +74,9 @@ public class Connection {
         assert actual.equals(new Document("_id", 4).append("a", 4)) : "Value should be 4";
 
         mongoClient.close();
+
+        // quick way to kill driver's background threads
+        // and prevent hanging for a long time
+        System.exit(0);
     }
 }

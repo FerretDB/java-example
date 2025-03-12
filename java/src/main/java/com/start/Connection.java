@@ -49,31 +49,33 @@ public class Connection {
             mongoClient = MongoClients.create(uri);
         }
 
-        MongoDatabase database = mongoClient.getDatabase("test");
+        try {
+            MongoDatabase database = mongoClient.getDatabase("test");
 
-        Document command = new Document("ping", 1);
-        Document res = database.runCommand(command);
+            Document command = new Document("ping", 1);
+            Document res = database.runCommand(command);
 
-        assert res.getDouble("ok").equals(1.0) : "ping failed";
+            assert res.getDouble("ok").equals(1.0) : "ping failed";
 
-        command = new Document("dropDatabase", 1);
-        res = database.runCommand(command);
+            command = new Document("dropDatabase", 1);
+            res = database.runCommand(command);
 
-        assert res.getDouble("ok").equals(1.0) : "dropDatabase failed";
+            assert res.getDouble("ok").equals(1.0) : "dropDatabase failed";
 
-        List<Document> docList = new ArrayList<Document>(4);
-        docList.add(new Document("_id", 1).append("a", 1));
-        docList.add(new Document("_id", 2).append("a", 2));
-        docList.add(new Document("_id", 3).append("a", 3));
-        docList.add(new Document("_id", 4).append("a", 4));
+            List<Document> docList = new ArrayList<Document>(4);
+            docList.add(new Document("_id", 1).append("a", 1));
+            docList.add(new Document("_id", 2).append("a", 2));
+            docList.add(new Document("_id", 3).append("a", 3));
+            docList.add(new Document("_id", 4).append("a", 4));
 
-        MongoCollection<Document> collection = database.getCollection("foo");
-        collection.insertMany(docList);
+            MongoCollection<Document> collection = database.getCollection("foo");
+            collection.insertMany(docList);
 
-        Document actual = collection.find(eq("a", 4)).first();
-        assert actual.equals(new Document("_id", 4).append("a", 4)) : "Value should be 4";
-
-        mongoClient.close();
+            Document actual = collection.find(eq("a", 4)).first();
+            assert actual.equals(new Document("_id", 4).append("a", 4)) : "Value should be 4";
+        } finally {
+            mongoClient.close();
+        }
 
         // quick way to kill driver's background threads
         // and prevent hanging for a long time
